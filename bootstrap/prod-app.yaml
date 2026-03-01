@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: prod
+  namespace: ci-cd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/haerinmv/cloud-native-infra.git
+    targetRevision: HEAD
+    path: apps/prod
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: prod
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
