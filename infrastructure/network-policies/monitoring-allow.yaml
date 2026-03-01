@@ -18,17 +18,22 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: allow-kube-api
+  name: allow-egress-dns-and-api
   namespace: monitoring
 spec:
   podSelector: {}
   policyTypes:
   - Egress
   egress:
-  - ports:
-    - port: 6443
-      protocol: TCP
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: kube-system
+    ports:
     - port: 53
       protocol: UDP
     - port: 53
+      protocol: TCP
+  - ports:
+    - port: 6443
       protocol: TCP
