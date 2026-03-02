@@ -65,13 +65,16 @@ passe par ce repo soit aucune manipulation directe en production.
 
 ## Workflow GitOps
 
-\`\`\`
+
 Modification YAML sur PC
         ↓
-git push → GitHub
+git push GitHub
         ↓
 ArgoCD détecte la différence
         ↓
 Déploiement automatique sur le cluster
-\`\`\`
 
+## Disclamer
+
+Les dossiers vides sont soit des dossiers auquel j'ai configurer avant la 
+mise en place de argocd tel que ci-cd et le reste j'ai pas encore finit de deployer en prod par exemple.
