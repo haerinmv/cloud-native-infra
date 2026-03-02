@@ -1,4 +1,4 @@
-# Cloud Native Platform — Infrastructure
+# Cloud Native Platform : Infrastructure
 
 Repo GitOps géré par ArgoCD. Toute modification du cluster 
 passe par ce repo soit aucune manipulation directe en production.
