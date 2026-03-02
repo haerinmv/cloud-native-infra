@@ -22,7 +22,7 @@ spec:
         app: loki
     spec:
       serviceAccountName: loki
-containers:
+      containers:
       - name: loki
         image: grafana/loki:2.9.0
         ports:
