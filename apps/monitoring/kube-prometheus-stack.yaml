@@ -1,0 +1,4 @@
+# kube-prometheus-stack installé via Helm
+# helm install kube-prometheus-stack prometheus-community/kube-prometheus-stack #   --namespace monitoring #   --set grafana.adminPassword=YassCloud2024! #   --set prometheus.prometheusSpec.retention=7d #   --set alertmanager.enabled=false
+#
+# Contient : Prometheus, Grafana, node-exporter, kube-state-metrics
