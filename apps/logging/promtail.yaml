@@ -52,8 +52,10 @@ data:
         target_label: pod
       - source_labels: [__meta_kubernetes_pod_container_name]
         target_label: container
-      pipeline_stages:
-      - docker: {}
+      - source_labels: [__meta_kubernetes_pod_uid, __meta_kubernetes_pod_container_name]
+        target_label: __path__
+        separator: /
+        replacement: /var/log/pods/*$1*/$2/*.log
 ---
 apiVersion: apps/v1
 kind: DaemonSet
@@ -83,8 +85,8 @@ spec:
         - name: varlog
           mountPath: /var/log
           readOnly: true
-        - name: varlibdockercontainers
-          mountPath: /var/lib/docker/containers
+        - name: varlogpods
+          mountPath: /var/log/pods
           readOnly: true
       volumes:
       - name: config
@@ -93,6 +95,6 @@ spec:
       - name: varlog
         hostPath:
           path: /var/log
-      - name: varlibdockercontainers
+      - name: varlogpods
         hostPath:
-          path: /var/lib/docker/containers
+          path: /var/log/pods
