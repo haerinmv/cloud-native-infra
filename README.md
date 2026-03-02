@@ -3,6 +3,8 @@
 Repo GitOps géré par ArgoCD. Toute modification du cluster 
 passe par ce repo soit aucune manipulation directe en production.
 
+Le but est de simuler une situation professionelle et surtout de comprendre les outils d'un ingenieur cloud/devops.
+
 > Documentation complète disponible sur 
 > [Cloud-Native-Platform](https://github.com/haerinmv/Cloud-Native-Platform)
 
@@ -66,12 +68,12 @@ passe par ce repo soit aucune manipulation directe en production.
 ## Workflow GitOps
 
 
-Modification YAML sur PC
-        ↓
+Ajout ou modif d'un fichier YAML sur PC
+        →
 git push GitHub
-        ↓
+        →
 ArgoCD détecte la différence
-        ↓
+        →
 Déploiement automatique sur le cluster
 
 ## Disclamer
