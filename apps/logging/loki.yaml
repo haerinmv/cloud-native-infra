@@ -22,20 +22,30 @@ spec:
         app: loki
     spec:
       serviceAccountName: loki
-      containers:
+containers:
       - name: loki
         image: grafana/loki:2.9.0
         ports:
         - containerPort: 3100
         args:
         - -config.file=/etc/loki/loki.yaml
+        securityContext:
+          runAsUser: 0
         volumeMounts:
         - name: config
           mountPath: /etc/loki
+        - name: wal
+          mountPath: /wal
+        - name: data
+          mountPath: /tmp/loki
       volumes:
       - name: config
         configMap:
           name: loki-config
+      - name: wal
+        emptyDir: {}
+      - name: data
+        emptyDir: {}
 ---
 apiVersion: v1
 kind: ConfigMap
