@@ -12,14 +12,12 @@ spec:
     path: infrastructure
   destination:
     server: https://kubernetes.default.svc
-    namespace: ci-cd
+    namespace: ci-cd          # gardé pour le fallback
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
     syncOptions:
     - CreateNamespace=true
-  syncOptions:
-  - CreateNamespace=true
-  - RespectIgnoreDifferences=true
-  - ApplyOutOfSyncOnly=true
+    - RespectIgnoreDifferences=true
+  # Permet à ArgoCD de gérer des ressources dans n'importe quel namespace
