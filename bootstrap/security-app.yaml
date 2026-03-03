@@ -1,0 +1,19 @@
+# bootstrap/security-app.yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: security
+  namespace: ci-cd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/haerinmv/cloud-native-infra
+    targetRevision: HEAD
+    path: apps/security
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: security
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
