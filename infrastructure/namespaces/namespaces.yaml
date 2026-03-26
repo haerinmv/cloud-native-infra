@@ -46,3 +46,10 @@ metadata:
   name: networking
   labels:
     name: networking
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ai-agent
+
+  

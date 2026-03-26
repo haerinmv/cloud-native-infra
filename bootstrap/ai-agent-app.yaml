@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ai-agent
+  namespace: ci-cd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/haerinmv/cloud-native-infra # Ex: https://github.com/haerin/cloud-native-infra.git
+    targetRevision: HEAD
+    path: apps/ai-agent # ArgoCD ira chercher les futurs pods de l'IA ici !
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: ai-agent
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
