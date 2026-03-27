@@ -13,7 +13,7 @@ spec:
       labels:
         app: llm-server
     spec:
-	  containers:
+      containers:
       - name: llm-server
         image: python:3.11-slim
         command:
