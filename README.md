@@ -14,7 +14,7 @@ Le but est de simuler une situation professionelle et surtout de comprendre les 
 |-------|------|
 | k3s   | Distribution Kubernetes légère |
 | Calico| CNI + NetworkPolicies (microsegmentation) |
-| ArgoCD| GitOps — déploiement automatisé depuis Git |
+| ArgoCD| GitOps , déploiement automatisé depuis Git |
 | Sealed Secrets | Chiffrement des secrets dans Git |
 | MinIO | Stockage objet S3-compatible |
 | Prometheus + Grafana | Monitoring et métriques |
