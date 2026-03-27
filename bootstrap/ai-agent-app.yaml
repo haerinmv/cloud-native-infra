@@ -6,9 +6,9 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/haerinmv/cloud-native-infra # Ex: https://github.com/haerin/cloud-native-infra.git
+    repoURL: https://github.com/haerinmv/cloud-native-infra 
     targetRevision: HEAD
-    path: apps/ai-agent # ArgoCD ira chercher les futurs pods de l'IA ici !
+    path: apps/ai-agent 
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: ai-agent
