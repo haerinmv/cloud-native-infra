@@ -1,53 +1,33 @@
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: allow-kube-api
+  name: ai-agent-allow
   namespace: ai-agent
 spec:
-  podSelector: {}
+  podSelector: {} # Cette règle s'applique à TOUS les pods du namespace ai-agent
   policyTypes:
-  - Egress
-  egress:
-  - ports:
-    - port: 443
-      protocol: TCP
-    - port: 6443
-      protocol: TCP
-    - port: 53
-      protocol: UDP
-    - port: 53
-      protocol: TCP
----
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: allow-intra-namespace
-  namespace: ai-agent
-spec:
-  podSelector: {}
-  policyTypes:
-  - Ingress
-  - Egress
-  egress:
-  - to:
-    - podSelector: {}
+    - Ingress
+    - Egress
+  
+  # 1. RÈGLES ENTRANTES (Ingress)
   ingress:
-  - from:
-    - podSelector: {}
----
-# Pour télécharger le modèle depuis HuggingFace
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: allow-egress-internet
-  namespace: ai-agent
-spec:
-  podSelector:
-    matchLabels:
-      app: llm-server
-  policyTypes:
-  - Egress
+    - from:
+      - podSelector: {} # Les pods de ce namespace ont le droit de se parler entre eux (Jarvis -> LLM)
+
+  # 2. RÈGLES SORTANTES (Egress)
   egress:
-  - ports:
-    - port: 443
-      protocol: TCP
+    # Autoriser le DNS (vers kube-system où se trouve CoreDNS)
+    - to:
+      - namespaceSelector:
+          matchLabels:
+            kubernetes.io/metadata.name: kube-system
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+          
+    # Autoriser le HTTPS (Internet + API Kubernetes)
+    - ports:
+      - protocol: TCP
+        port: 443
