@@ -15,18 +15,19 @@ spec:
     spec:
       containers:
       - name: llm-server
-        image: ghcr.io/ggerganov/llama.cpp:server-b4553
+        # Utilisation de l'image officielle la plus récente (qui gère ARM64 nativement)
+        image: ghcr.io/ggerganov/llama.cpp:server
         args:
-          - "--model"
+          - "-m"
           - "/models/qwen.gguf"
           - "--host"
           - "0.0.0.0"
           - "--port"
           - "8000"
-          - "--ctx-size"
+          - "-c" # Contexte
           - "2048"
-          - "--threads"
-          - "4"
+          - "-np" # Slots parallèles
+          - "1"
         ports:
         - containerPort: 8000
         resources:
@@ -47,8 +48,12 @@ spec:
           - -c
           - |
             if [ ! -f /models/qwen.gguf ]; then
+              echo "Téléchargement du modèle Qwen 1.5B (environ 1.2 Go)..."
               curl -L -o /models/qwen.gguf \
               "https://huggingface.co/Qwen/Qwen1.5-1.8B-Chat-GGUF/resolve/main/qwen1_5-1_8b-chat-q4_k_m.gguf"
+              echo "Téléchargement terminé !"
+            else
+              echo "Modèle déjà présent, on passe."
             fi
         volumeMounts:
         - name: models
