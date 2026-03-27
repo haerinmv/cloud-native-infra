@@ -184,7 +184,7 @@ spec:
       labels:
         app: jarvis-agent
     spec:
-      serviceAccountName: ia-manager-sa
+      serviceAccountName: jarvis-sa
       containers:
       - name: jarvis
         image: python:3.11-slim

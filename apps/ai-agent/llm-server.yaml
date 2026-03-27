@@ -13,21 +13,15 @@ spec:
       labels:
         app: llm-server
     spec:
-      containers:
+	  containers:
       - name: llm-server
-        # Utilisation de l'image officielle la plus récente (qui gère ARM64 nativement)
-        image: ghcr.io/ggerganov/llama.cpp:server
-        args:
-          - "-m"
-          - "/models/qwen.gguf"
-          - "--host"
-          - "0.0.0.0"
-          - "--port"
-          - "8000"
-          - "-c" # Contexte
-          - "2048"
-          - "-np" # Slots parallèles
-          - "1"
+        image: python:3.11-slim
+        command:
+          - sh
+          - -c
+          - |
+            pip install llama-cpp-python[server] -q
+            python3 -m llama_cpp.server --model /models/qwen.gguf --host 0.0.0.0 --port 8000 --n_ctx 2048 --n_threads 4
         ports:
         - containerPort: 8000
         resources:
