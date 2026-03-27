@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/haerinmv/cloud-native-infra 
+    repoURL: https://github.com/haerinmv/cloud-native-infra.git 
     targetRevision: HEAD
     path: apps/ai-agent 
   destination:
