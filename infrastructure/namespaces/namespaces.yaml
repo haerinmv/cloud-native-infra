@@ -46,26 +46,3 @@ metadata:
   name: networking
   labels:
     name: networking
----
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: test-ns
-  labels:
-    name: test-ns
----
-apiVersion: v1
-kind: Pod
-metadata:
-  name: pod-fantome
-  namespace: test-ns
-spec:
-  containers:
-  - name: mon-conteneur-alpine
-    image: alpine:latest
-    command: ["sleep", "infinity"]
-    securityContext:
-      runAsNonRoot: true
-      runAsUser: 1000
-      allowPrivilegeEscalation: false
-  
