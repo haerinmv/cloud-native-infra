@@ -64,6 +64,8 @@ spec:
       labels:
         app: promtail
     spec:
+      securityContext:
+        runAsNonRoot: true
       serviceAccountName: promtail
       containers:
       - name: promtail

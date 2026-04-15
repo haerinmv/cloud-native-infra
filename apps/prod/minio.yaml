@@ -27,6 +27,8 @@ spec:
       labels:
         app: minio
     spec:
+      securityContext:
+        runAsNonRoot: true
       containers:
       - name: minio
         image: quay.io/minio/minio:latest
