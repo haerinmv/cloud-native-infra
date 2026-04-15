@@ -21,3 +21,12 @@ jobs:
         uses: docker://ghcr.io/yannh/kubeconform:latest
         with:
           args: "-ignore-missing-schemas -summary apps/ infrastructure/ bootstrap/ root-app.yaml"
+
+      - name: trivy
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'config'
+          hide-progress: false
+          format: 'table'
+          exit-code: '1'
+          severity: 'CRITICAL,HIGH'
