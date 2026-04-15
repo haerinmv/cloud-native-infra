@@ -33,6 +33,24 @@ spec:
               key: password
         ports:
         - containerPort: 8080
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 1000
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+            - ALL
+        volumeMounts:
+        - name: keycloak-data
+          mountPath: /opt/keycloak/data
+        - name: tmp
+          mountPath: /tmp
+      volumes:
+      - name: keycloak-data
+        emptyDir: {}
+      - name: tmp
+        emptyDir: {}
 ---
 apiVersion: v1
 kind: Service

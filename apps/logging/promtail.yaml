@@ -70,7 +70,17 @@ spec:
         image: grafana/promtail:2.9.0
         args:
         - -config.file=/etc/promtail/promtail.yaml
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 10001
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+            - ALL
         volumeMounts:
+        - name: tmp
+          mountPath: /tmp
         - name: config
           mountPath: /etc/promtail
         - name: varlog
@@ -80,6 +90,8 @@ spec:
           mountPath: /var/log/pods
           readOnly: true
       volumes:
+      - name: tmp
+        emptyDir: {}
       - name: config
         configMap:
           name: promtail-config
