@@ -11,13 +11,10 @@ spec:
   - Ingress
   - Egress
   ingress:
-  # On autorise tout le namespace "prod", ou plutôt on autorise n'importe quel ingress HTTP depuis l'Ingress Controller (traefik/nginx)
-  # Pour faire simple, on ouvre le 8080 en Ingress
   - ports:
     - port: 8080
       protocol: TCP
   egress:
-  # Keycloak doit pouvoir résoudre le DNS pour potentiellement contacter des providers externes, OIDC etc.
   - ports:
     - port: 53
       protocol: UDP
