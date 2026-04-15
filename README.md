@@ -76,6 +76,12 @@ ArgoCD détecte la différence
         →
 Déploiement automatique sur le cluster
 
+## Pipeline 
+
+Pour protéger le cluster GitOps contre les erreurs humaines j'ai mis en place une Pipeline via **GitHub Actions** qui s'exécute à chaque commit. L'objectif est d'empêcher tout code défaillant d'atteindre le serveur , on a donc :
+- **Yamllint** : Analyse chaque fichier pour y imposer une norme d'indentation stricte et traquer les mauvaises pratiques syntaxiques. Cela garantit un référentiel propre et lisible en équipe.
+- **Kubeconform** : Scanne les définitions de l'infrastructure et les compare au dictionnaire officiel de Kubernetes. Il garantit qu'aucune erreur de frappe ou API obsolète ne viennent silencieusement tout casser.
+
 ## Disclamer
 
 Les dossiers vides sont soit des dossiers auquel j'ai configurer avant la 
