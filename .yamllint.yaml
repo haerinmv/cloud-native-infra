@@ -1,7 +1,16 @@
----
 extends: default
 
 rules:
   line-length: disable
   document-start: disable
   comments: disable
+
+  indentation:
+    spaces: 2
+    indent-sequences: consistent
+
+  trailing-spaces:
+    level: warning
+
+  truthy:
+    allowed-values: ['true', 'false', 'on']
