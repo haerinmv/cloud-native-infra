@@ -1,4 +1,33 @@
-# kube-prometheus-stack installé via Helm
-# helm install kube-prometheus-stack prometheus-community/kube-prometheus-stack #   --namespace monitoring #   --set grafana.adminPassword=YassCloud2024! #   --set prometheus.prometheusSpec.retention=7d #   --set alertmanager.enabled=false
-#
-# Contient : Prometheus, Grafana, node-exporter, kube-state-metrics
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kube-prometheus-stack
+  namespace: ci-cd
+spec:
+  project: default
+  source:
+    repoURL: https://prometheus-community.github.io/helm-charts
+    chart: kube-prometheus-stack
+    targetRevision: 56.21.0
+    helm:
+      values: |
+        grafana:
+          admin:
+            existingSecret: "grafana-admin-credentials"
+            userKey: "admin-user"
+            passwordKey: "admin-password"
+        prometheus:
+          prometheusSpec:
+            retention: 7d
+        alertmanager:
+          enabled: false
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: monitoring
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=false
+      - ServerSideApply=true
