@@ -1,0 +1,23 @@
+name: guardian
+
+on:
+  push:
+    branches:
+      - main 
+
+jobs:
+  mission:
+    runs-on: ubuntu-latest
+    steps:
+      - name: code
+        uses: actions/checkout@v4
+
+      - name: yamllint
+        uses: ibiqlik/action-yamllint@v3
+        with:
+          config_file: .yamllint.yaml
+
+      - name: kubeconform                           
+        uses: docker://ghcr.io/yannh/kubeconform:latest
+        with:
+          args: "-ignore-missing-schemas -summary apps/ infrastructure/ bootstrap/ root-app.yaml"
