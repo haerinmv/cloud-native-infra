@@ -26,7 +26,7 @@ spec:
               name: Keycloak
               allow_sign_up: true
               client_id: grafana
-              client_secret: "COLLE_TON_SECRET_DE_KEYCLOAK_ICI"
+              client_secret: "2HxykeWpLFZGUoh5H7o4ABAuzqMGO6oh"
               scopes: openid profile email
               auth_url: http://192.168.1.101:30080/realms/yass/protocol/openid-connect/auth
               token_url: http://192.168.1.101:30080/realms/yass/protocol/openid-connect/token
