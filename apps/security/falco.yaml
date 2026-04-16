@@ -12,7 +12,7 @@ spec:
     helm:
       values: |
         driver:
-          kind: modern_ebpf
+          kind: ebpf
         tty: true
   destination:
     server: https://kubernetes.default.svc
