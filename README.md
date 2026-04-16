@@ -12,79 +12,90 @@ Le but est de simuler une situation professionelle et surtout de comprendre les 
 
 | Outil | Rôle |
 |-------|------|
-| k3s   | Distribution Kubernetes légère |
-| Calico| CNI + NetworkPolicies (microsegmentation) |
-| ArgoCD| GitOps , déploiement automatisé depuis Git |
-| Sealed Secrets | Chiffrement des secrets dans Git |
+| k3s   | Distribution Kubernetes légère (optimisé pour ARM) |
+| Calico| CNI + NetworkPolicies (microsegmentation Zero-Trust) |
+| ArgoCD| GitOps, déploiement automatisé depuis Git (Pull Model) |
+| Vault | (HashiCorp) Gestion centralisée et dynamique des mots de passe |
+| Sealed Secrets | Chiffrement asymétrique des secrets dans Git |
 | MinIO | Stockage objet S3-compatible |
-| Prometheus + Grafana | Monitoring et métriques |
-| Loki + Promtail | Centralisation des logs |
-| Keycloak | Authentification SSO  |
+| Prometheus + Grafana | Monitoring et alerting |
+| Loki + Promtail | Centralisation et aggrégation des logs |
+| Keycloak | Authentification SSO via protocoles OIDC/OAuth2 |
+| Kyverno | Policy-as-Code (Contrôleur d'admission K8s) |
+| Falco | Intrusion Detection System (Analyse noyau eBPF) |
 
 ## Architecture sécurité
 
 - **Deny-all par défaut** sur chaque namespace
-- Ouverture explicite des flux nécessaires uniquement
-- Secrets chiffrés via Sealed Secrets donc repo public sans risque
-- RBAC configuré par serviceaccount
+- Ouverture explicite des flux nécessaires uniquement (Ingress/Egress sur ports spécifiques)
+- Transistion vers le **Dynamic Secrets management** avec Vault pour éviter l'exposition des secrets Kubernetes dans etcd
+- **Container Hardening** rigoureux validé par Trivy (Drop Capabilities, RunAsNonRoot, ReadOnlyRootFilesystem)
+- **Policy-as-code** avec Kyverno pour imposer des standards stricts (rejet systématique des images utilisant la balise "latest" en production)
+- Détection d'anomalies comportementales à l'échelle du noyau Linux grâce à Falco
 
-## Structure
+## Structure GitOps (App of Apps Pattern)
 
 ```bash
 ├── apps
-│   ├── ci-cd
-│   ├── dev
-│   ├── logging
-│   │   ├── loki.yaml
-│   │   └── promtail.yaml
-│   ├── monitoring
-│   │   └── kube-prometheus-stack.yaml
-│   ├── networking
-│   ├── prod
-│   │   ├── keycloak-sealed-secret.yaml
-│   │   ├── keycloak.yaml
-│   │   ├── minio-sealed-secret.yaml
-│   │   └── minio.yaml
-│   └── security
-│       └── sealed-secrets.yaml
+│   ├── ci-cd
+│   ├── dev
+│   ├── logging
+│   │   ├── loki.yaml
+│   │   └── promtail.yaml
+│   ├── monitoring
+│   │   └── kube-prometheus-stack.yaml
+│   ├── networking
+│   ├── prod
+│   │   ├── keycloak-sealed-secret.yaml
+│   │   ├── keycloak.yaml
+│   │   ├── minio-sealed-secret.yaml
+│   │   └── minio.yaml
+│   └── security
+│       ├── falco.yaml
+│       ├── kyverno-policies.yaml
+│       ├── kyverno.yaml
+│       ├── sealed-secrets.yaml
+│       └── vault.yaml
 ├── bootstrap
-│   ├── infrastructure-app.yaml
-│   ├── logging-app.yaml
-│   ├── monitoring-app.yaml
-│   └── prod-app.yaml
+│   ├── infrastructure-app.yaml
+│   ├── logging-app.yaml
+│   ├── monitoring-app.yaml
+│   └── prod-app.yaml
 ├── infrastructure
-│   ├── namespaces
-│   │   └── namespaces.yaml
-│   ├── network-policies
-│   │   ├── ci-cd-allow.yaml
-│   │   ├── deny-all.yaml
-│   │   ├── monitoring-allow.yaml
-│   │   └── prod-allow.yaml
-│   ├── rbac
-│   └── storage
+│   ├── namespaces
+│   │   └── namespaces.yaml
+│   ├── network-policies
+│   │   ├── ci-cd-allow.yaml
+│   │   ├── deny-all.yaml
+│   │   ├── monitoring-allow.yaml
+│   │   └── prod-allow.yaml
+│   ├── rbac
+│   └── storage
 └── README.md
 ```
 
 ## Workflow GitOps
 
-
 Ajout ou modif d'un fichier YAML sur PC
         →
-git push GitHub
+git push GitHub sur une branche de feature
         →
-ArgoCD détecte la différence
+Validation CI par GitHub Actions
+        →
+Merge sur Main
+        →
+ArgoCD détecte la différence (Polling ou Webhook)
         →
 Déploiement automatique sur le cluster
 
-## Pipeline 
+## Pipeline Intégration Continue (CI)
 
-Pour protéger le cluster GitOps contre les erreurs humaines j'ai mis en place une Pipeline via **GitHub Actions** qui s'exécute à chaque commit. L'objectif est d'empêcher tout code défaillant d'atteindre le serveur , on a donc :
-- **Yamllint** : Analyse chaque fichier pour y imposer une norme d'indentation stricte et traquer les mauvaises pratiques syntaxiques. Cela garantit un référentiel propre et lisible en équipe.
-- **Kubeconform** : Scanne les définitions de l'infrastructure et les compare au dictionnaire officiel de Kubernetes. Il garantit qu'aucune erreur de frappe ou API obsolète ne viennent silencieusement tout casser.
-- **Trivy** : Réalise des test de misconfiguration pour trouver des failles et compare avec les CVE connues.
+Pour protéger le cluster GitOps contre les erreurs humaines, une Pipeline via **GitHub Actions** s'exécute à chaque commit. L'objectif de ce "Shift-Left" est d'empêcher tout code défaillant ou non sécurisé d'atteindre le cluster.
 
+- **Yamllint** : Analyse chaque fichier pour y imposer une norme d'indentation stricte. Cela garantit un référentiel propre et assure l'homogénéité du code en équipe.
+- **Kubeconform** : Scanne les définitions de l'infrastructure et les compare au dictionnaire officiel de Kubernetes (Schémas OpenAPI). Il garantit qu'aucune API obsolète ou structure YAML invalide ne franchisse la porte de production.
+- **Trivy** : Réalise des audits de misconfigurations Kubernetes complets (analyse des Kubernetes Security Vulnerabilities - KSV). Il vérifie notamment que chaque pod suit les principes d'isolation (NonRoot, systèmes de fichiers en lecture seule, abandon des privilèges kernel).
 
-## Disclamer
+## Disclaimer
 
-Les dossiers vides sont soit des dossiers auquel j'ai configurer avant la 
-mise en place de argocd tel que ci-cd et le reste j'ai pas encore finit de deployer en prod par exemple.
+Le dépôt continue d'évoluer. Les dossiers vides témoignent d'infrastructures configurées (comme le réseau interne ou le rbac) en amont du déploiement applicatif final, illustrant une approche de provisioning étape par étape.
