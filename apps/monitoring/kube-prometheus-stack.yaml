@@ -16,6 +16,21 @@ spec:
             existingSecret: "grafana-admin-credentials"
             userKey: "admin-user"
             passwordKey: "admin-password"
+          admin:
+            existingSecret: "grafana-admin-credentials"
+            userKey: "admin-user"
+            passwordKey: "admin-password"
+          grafana.ini:
+            auth.generic_oauth:
+              enabled: true
+              name: Keycloak
+              allow_sign_up: true
+              client_id: grafana
+              client_secret: "COLLE_TON_SECRET_DE_KEYCLOAK_ICI"
+              scopes: openid profile email
+              auth_url: http://192.168.1.101:30080/realms/yass/protocol/openid-connect/auth
+              token_url: http://192.168.1.101:30080/realms/yass/protocol/openid-connect/token
+              api_url: http://192.168.1.101:30080/realms/yass/protocol/openid-connect/userinfo  
         prometheus:
           prometheusSpec:
             retention: 7d
