@@ -1,0 +1,19 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: require-specific-image-tag
+  namespace: security
+spec:
+  validationFailureAction: Enforce
+  rules:
+    - name: validate-image-tag
+      match:
+        resources:
+          kinds:
+            - Pod
+      validate:
+        message: "une version spécifique est nécessaires (evitez latest en version)"
+        pattern:
+          spec:
+            containers:
+              - image: "!*:latest"
