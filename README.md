@@ -5,8 +5,6 @@ passe par ce repo soit aucune manipulation directe en production.
 
 Le but est de simuler une situation professionelle et surtout de comprendre les outils d'un ingenieur cloud/devops.
 
-> Documentation complète disponible sur 
-> [Cloud-Native-Platform](https://github.com/haerinmv/Cloud-Native-Platform)
 
 ## Stack technique
 
@@ -76,26 +74,13 @@ Le but est de simuler une situation professionelle et surtout de comprendre les 
 
 ## Workflow GitOps
 
-Ajout ou modif d'un fichier YAML sur PC
-        →
-git push GitHub sur une branche de feature
-        →
-Validation CI par GitHub Actions
-        →
-Merge sur Main
-        →
-ArgoCD détecte la différence (Polling ou Webhook)
-        →
-Déploiement automatique sur le cluster
+Ajout ou modif d'un fichier YAML sur mon PC , git push GitHub sur une branche de feature , Validation CI par GitHub Action , ArgoCD détecte la différence donc soit du Prune soit du Heal et enfin le déploiement automatique sur le cluster
 
 ## Pipeline Intégration Continue (CI)
 
-Pour protéger le cluster GitOps contre les erreurs humaines, une Pipeline via **GitHub Actions** s'exécute à chaque commit. L'objectif de ce "Shift-Left" est d'empêcher tout code défaillant ou non sécurisé d'atteindre le cluster.
+Pour protéger le cluster GitOps contre les erreurs humaines, une Pipeline via **GitHub Actions** s'exécute à chaque commit. L'objectif est d'empêcher tout code défaillant ou non sécurisé d'atteindre le cluster.
 
 - **Yamllint** : Analyse chaque fichier pour y imposer une norme d'indentation stricte. Cela garantit un référentiel propre et assure l'homogénéité du code en équipe.
-- **Kubeconform** : Scanne les définitions de l'infrastructure et les compare au dictionnaire officiel de Kubernetes (Schémas OpenAPI). Il garantit qu'aucune API obsolète ou structure YAML invalide ne franchisse la porte de production.
-- **Trivy** : Réalise des audits de misconfigurations Kubernetes complets (analyse des Kubernetes Security Vulnerabilities - KSV). Il vérifie notamment que chaque pod suit les principes d'isolation (NonRoot, systèmes de fichiers en lecture seule, abandon des privilèges kernel).
+- **Kubeconform** : Scanne les définitions de l'infrastructure et les compare au dictionnaire officiel de Kubernetes. Il garantit qu'aucune API obsolète ou structure YAML invalide ne franchisse la porte de production.
+- **Trivy** : Réalise des audits de misconfigurations Kubernetes complets (analyse des Kubernetes Security Vulnerabilities : KSV). Il vérifie notamment que chaque pod suit les principes d'isolation (NonRoot, systèmes de fichiers en lecture seule, abandon des privilèges kernel).
 
-## Disclaimer
-
-Le dépôt continue d'évoluer. Les dossiers vides témoignent d'infrastructures configurées (comme le réseau interne ou le rbac) en amont du déploiement applicatif final, illustrant une approche de provisioning étape par étape.
