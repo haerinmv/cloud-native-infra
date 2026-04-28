@@ -84,3 +84,10 @@ Pour protéger le cluster GitOps contre les erreurs humaines, une Pipeline via *
 - **Kubeconform** : Scanne les définitions de l'infrastructure et les compare au dictionnaire officiel de Kubernetes. Il garantit qu'aucune API obsolète ou structure YAML invalide ne franchisse la porte de production.
 - **Trivy** : Réalise des audits de misconfigurations Kubernetes complets (analyse des Kubernetes Security Vulnerabilities : KSV). Il vérifie notamment que chaque pod suit les principes d'isolation (NonRoot, systèmes de fichiers en lecture seule, abandon des privilèges kernel).
 
+
+## Projet pour la suite
+
+
+Pour la suite je pensais a coder en go ou python soit un scanner de faille interne a mon cluster ou un binaire. 
+
+La suite sera directement mis a jour ici.
